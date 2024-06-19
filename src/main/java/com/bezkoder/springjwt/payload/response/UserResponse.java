@@ -2,7 +2,9 @@ package com.bezkoder.springjwt.payload.response;
 
 
 import com.bezkoder.springjwt.models.Role;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
@@ -11,6 +13,8 @@ import java.util.Set;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserResponse {
 
 	private Long id;
@@ -31,14 +35,8 @@ public class UserResponse {
 
 
 	private Set<Role> roles = new HashSet<>();
+	private int identreprise;
+	private String nameEntreprise;
+	private String logo;
 
-	public UserResponse() {
-		this.id = id;
-		this.username = username;
-		this.firstname = firstname;
-		this.lastname = lastname;
-		this.email = email;
-		this.password = password;
-		this.roles = roles;
-	}
 }

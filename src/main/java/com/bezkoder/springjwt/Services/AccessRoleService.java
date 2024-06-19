@@ -44,7 +44,7 @@ class AccessRoleService implements IAccessRoleService {
             acr.setRole_id(val.getRole().getId());
             acr.setName_role(val.getRole().getName());
             acr.setAccess_id(val.getAccess().getId());
-            acr.setNameaccess(val.getAccess().getName());
+            acr.setNameaccess(val.getAccess().getTitle());
             acr.setAdd(val.isAjouter());
             acr.setModifier(val.isModifier());
             acr.setConsulter(val.isConsulter());
@@ -63,7 +63,7 @@ class AccessRoleService implements IAccessRoleService {
             acr.setRole_id(val.getRole().getId());
             acr.setName_role(val.getRole().getName());
             acr.setAccess_id(val.getAccess().getId());
-            acr.setNameaccess(val.getAccess().getName());
+            acr.setNameaccess(val.getAccess().getTitle());
             acr.setAdd(val.isAjouter());
             acr.setModifier(val.isModifier());
             acr.setConsulter(val.isConsulter());
@@ -74,9 +74,17 @@ class AccessRoleService implements IAccessRoleService {
     }
 
     @Override
+    public AccessRole findByRoleandAccess(@Param("idrole") int idrole , @Param("idaccess") int idaccess) {
+        return accessRoleRepository.findAccessRoleByAccessIdAndRoleId(idrole,idaccess);
+    }
+    @Override
+    public AccessRole findByRoleandAccessTitle(@Param("idrole") int idrole , @Param("title") String title) {
+        return accessRoleRepository.findAccessRoleByAccssTitleAndRoleId(idrole, title);
+    }
+    @Override
     public ResponseEntity<?> AddAccessRole(AccessroleRequest accessRoleRequest) {
         Role role = roleRepository.findById(accessRoleRequest.getRoleid()).orElseThrow(() -> new EntityNotFoundException("Role not found"));
-        Access access = accessRepository.findById(accessRoleRequest.getAccesid().longValue()).orElseThrow(() -> new EntityNotFoundException("Access not found"));
+        Access access = accessRepository.findById(accessRoleRequest.getAccesid()).orElseThrow(() -> new EntityNotFoundException("Access not found"));
         AccessRole accessRole = new AccessRole();
         accessRole.setId(new AccessRolePk(role, access)); // Set the identifier value
         accessRole.setRole(role);
@@ -86,16 +94,36 @@ class AccessRoleService implements IAccessRoleService {
         accessRole.setConsulter(accessRoleRequest.isConsulter());
         accessRole.setSupprimer(accessRoleRequest.isSupprimer());
         accessRoleRepository.save(accessRole);
-        return ResponseEntity.ok("Add Succesful");
+        return ResponseEntity.ok(new MessageResponse("Add Succesful"));
     }
 
     @Override
-    public ResponseEntity<?> UpdateAccessRole(AccessroleRequest AccessRoleRequest, long id) {
-        return null;
+    public ResponseEntity<?> UpdateAccessRole(AccessroleRequest accessRoleRequest,@Param("idrole") int idrole , @Param("idaccess") int idaccess ) {
+        AccessRole ar = accessRoleRepository.findAccessRoleByAccessIdAndRoleId(idrole,idaccess);
+        if(ar.toString().isEmpty()){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: AccessRole not found!"));
+        }
+        ar.setAjouter(accessRoleRequest.isAjouter());
+        ar.setModifier(accessRoleRequest.isModifier());
+        ar.setConsulter(accessRoleRequest.isConsulter());
+        ar.setSupprimer(accessRoleRequest.isSupprimer());
+        accessRoleRepository.save(ar);
+        return ResponseEntity.ok(new MessageResponse("Update Succesful"));
     }
 
     @Override
-    public ResponseEntity<?> delete(Long id) {
-        return null;
+    public ResponseEntity<?> delete(@Param("idrole") int idrole , @Param("idaccess") int idaccess ) {
+        AccessRole ar = accessRoleRepository.findAccessRoleByAccessIdAndRoleId(idrole,idaccess);
+        if(ar.toString().isEmpty()){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: AccessRole not found!"));
+        }
+        accessRoleRepository.delete(ar);
+        return ResponseEntity.ok(new MessageResponse("Delete Succesful"));
     }
+
+
 }

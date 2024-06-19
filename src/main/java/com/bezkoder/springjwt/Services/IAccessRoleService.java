@@ -14,7 +14,9 @@ public interface IAccessRoleService {
     List<AccessRoleResponse> findall();
 
     List<AccessRoleResponse> findbyRoleId(int idrole);
+    AccessRole findByRoleandAccess(int idrole ,int idaccess);
+    AccessRole findByRoleandAccessTitle(int idrole ,String title);
     ResponseEntity<?> AddAccessRole(AccessroleRequest AccessRoleRequest);
-     ResponseEntity<?> UpdateAccessRole(AccessroleRequest AccessRoleRequest, long id);
-     ResponseEntity<?> delete (Long id );
+     ResponseEntity<?> UpdateAccessRole(AccessroleRequest AccessRoleRequest, int idrole ,int idaccess);
+     ResponseEntity<?> delete (int idrole ,int idaccess );
 }

@@ -17,15 +17,24 @@ public class RoleController {
   @Autowired
   IRoleService iRoleService;
 
-  @GetMapping("/all")
-  public List<Role> all() {
-    return iRoleService.findall();
+  @GetMapping("/all/{identreprise}/{idrole}/{iduser}")
+  public List<Role> all(@PathVariable("identreprise") int identreprise, @PathVariable("idrole") int idrole,@PathVariable("iduser") int iduser) {
+    return iRoleService.findall(identreprise,idrole,iduser);
   }
 
   @GetMapping("/find/{id}")
   public Role find(@PathVariable("id") int id)
   {
     Role u=iRoleService.findbyId(id);
+
+
+
+    return u;
+  }
+  @GetMapping("/findn/{name}")
+  public Role findN(@PathVariable("name") String name)
+  {
+    Role u=iRoleService.findbyName(name);
 
 
 

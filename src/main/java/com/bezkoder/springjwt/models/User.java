@@ -36,14 +36,18 @@ public class User {
   @Size(max = 50)
   @Email
   private String email;
+  @Enumerated(EnumType.STRING)
+  private EUser status;
 
   @NotBlank
   @Size(max = 120)
   private String password;
   @Column(name = "reset_token")
+  @JsonIgnore
   private String resetToken;
 
   @Column()
+  @JsonIgnore
   private Date expiryDate;
 
 
@@ -56,6 +60,12 @@ public class User {
   @JoinColumn(name = "Enterprise_id")
   @JsonIgnore
   private Entreprise entreprise;
+  @OneToMany(mappedBy = "user",fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+  @JsonIgnore
+  private Set<Role> roleCree ;
+  @OneToMany(mappedBy = "user",fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+  @JsonIgnore
+  private Set<Fournisseur> fournisseurs ;
   public User() {
   }
 

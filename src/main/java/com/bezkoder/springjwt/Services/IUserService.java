@@ -10,6 +10,7 @@ import java.util.List;
 public interface IUserService {
 
     List<UserResponse> findall();
+    List<UserResponse> findallUserByEntreprise(int identreprise);
     UserResponse findbyIdd(Long id);
     public ResponseEntity<?> UpdateUser( SignupRequest signUpRequest, long id);
     void delete (Long id );

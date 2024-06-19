@@ -11,6 +11,7 @@ public class RoleRequest {
 
 	@NotBlank
 	private String name;
+	private long iduser;
 
 
 }

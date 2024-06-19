@@ -1,7 +1,6 @@
 package com.bezkoder.springjwt.Services;
 
 
-import com.bezkoder.springjwt.models.ERole;
 import com.bezkoder.springjwt.models.Role;
 import com.bezkoder.springjwt.models.User;
 import com.bezkoder.springjwt.payload.request.SignupRequest;
@@ -10,6 +9,7 @@ import com.bezkoder.springjwt.payload.response.UserResponse;
 import com.bezkoder.springjwt.repository.RoleRepository;
 import com.bezkoder.springjwt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,6 +45,26 @@ class UserService implements IUserService {
         return us;
 
     }
+
+    @Override
+    public List<UserResponse> findallUserByEntreprise(@Param("identreprise")int identreprise) {
+        List<User> users= userRepository.findUsersByEntrepriseId(identreprise);
+        List<UserResponse> us = new ArrayList<>();
+        users.forEach(val->{
+            UserResponse ur = new UserResponse();
+            ur.setId(val.getId());
+            ur.setUsername(val.getUsername());
+            ur.setImage(val.getImage());
+            ur.setPassword(val.getPassword());
+            ur.setEmail(val.getEmail());
+            ur.setFirstname(val.getFirstname());
+            ur.setLastname(val.getLastname());
+            ur.setRoles(val.getRoles());
+            us.add(ur);
+        });
+        return us;
+    }
+
     @Override
     public UserResponse findbyIdd(Long id) {
         User val = userRepository.findById(id).get();
@@ -56,6 +76,12 @@ class UserService implements IUserService {
         u.setEmail(val.getEmail());
         u.setFirstname(val.getFirstname());
         u.setLastname(val.getLastname());
+        u.setRoles(val.getRoles());
+        if (val.getEntreprise() != null) {
+           u.setIdentreprise(val.getEntreprise().getId());
+           u.setNameEntreprise(val.getEntreprise().getName());
+           u.setLogo(val.getEntreprise().getLogo());
+       }
 
 
         return u;

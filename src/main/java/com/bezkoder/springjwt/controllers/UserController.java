@@ -22,7 +22,10 @@ public class UserController {
   public List<UserResponse> all() {
     return iUserService.findall();
   }
-
+  @GetMapping("/all/{id}")
+  public List<UserResponse> allE(@PathVariable("id") int id) {
+    return iUserService.findallUserByEntreprise(id);
+  }
   @GetMapping("/find/{id}")
   public UserResponse find(@PathVariable("id") long id)
   {

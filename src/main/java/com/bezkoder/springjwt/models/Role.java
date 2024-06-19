@@ -23,6 +23,10 @@ public class Role {
   @OneToMany(mappedBy = "role",fetch = FetchType.LAZY , cascade = CascadeType.ALL)
   @JsonIgnore
   private Set<AccessRole> accessRoles = new HashSet<>();
+  @ManyToOne()
+  @JoinColumn(name = "Creator_id")
+  @JsonIgnore
+  private User user;
   public Role() {
 
   }

@@ -7,7 +7,10 @@ import lombok.Setter;
 import java.util.Set;
 
 @Entity
-@Table(name = "entreprise")
+@Table(name = "entreprise",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "matriculefiscale"),
+        })
 @Getter
 @Setter
 public class Entreprise {
@@ -18,6 +21,11 @@ public class Entreprise {
 
   @Column(length = 20)
   private String name;
+  @Column(length = 20)
+  private String matriculefiscale;
+  private String adresse;
+  private String logo;
+
   @OneToMany(mappedBy = "entreprise",fetch = FetchType.LAZY , cascade = CascadeType.ALL)
   private Set<User> users;
   public Entreprise() {

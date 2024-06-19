@@ -1,28 +1,15 @@
 package com.bezkoder.springjwt.controllers;
-
-
-import com.bezkoder.springjwt.Services.EmailSenderService;
-import com.bezkoder.springjwt.Services.FileStorageService;
+import com.bezkoder.springjwt.Services.EmailEncryptionUtil;
 import com.bezkoder.springjwt.Services.IAuthService;
-
-
-import com.bezkoder.springjwt.payload.request.PasswordoublierRequest;
-import com.bezkoder.springjwt.payload.request.RestRequest;
-
+import com.bezkoder.springjwt.payload.request.*;
+import com.bezkoder.springjwt.payload.response.MessageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
-
-import com.bezkoder.springjwt.payload.request.LoginRequest;
-import com.bezkoder.springjwt.payload.request.SignupRequest;
 import com.bezkoder.springjwt.repository.RoleRepository;
 import com.bezkoder.springjwt.repository.UserRepository;
-import com.bezkoder.springjwt.security.jwt.JwtUtils;
-import com.bezkoder.springjwt.security.services.UserDetailsImpl;
 import org.springframework.web.multipart.MultipartFile;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
@@ -39,15 +26,7 @@ public class AuthController {
   RoleRepository roleRepository;
 
   @Autowired
-  EmailSenderService emailSenderService;
-
-  @Autowired
-  private FileStorageService fileStorageService;
-  @Autowired
   private IAuthService iAuthService;
-
-  @Autowired
-  private JavaMailSender javaMailSender;
 
   @PostMapping("/signin")
   public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -58,56 +37,43 @@ public class AuthController {
   public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
    return iAuthService.registerUser(signUpRequest);
   }
-
- /* @PostMapping("/uploadImage/{id}")
-  public String uploadImage(@PathVariable("id") long id, @RequestParam("file") MultipartFile file) {
-    String fileName = fileStorageService.storeImageUser(id, file);
-
-    String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-            .path("/downloadFile/")
-            .path(fileName)
-            .toUriString();
-
-    return "le fichier a téléchargé avec succès";
+  @PostMapping("/signupC")
+  public ResponseEntity<?> registerCollaborator(@Valid @RequestBody SignupCollaboratorRequest signUpRequest) {
+    return iAuthService.registerCollaborator(signUpRequest);
   }
-  @GetMapping("/downloadFile/{fileName:.+}")
-  public ResponseEntity<Resource> downloadFile( @PathVariable String fileName, HttpServletRequest request) {
-    // Load file as Resource
-    Resource resource = fileStorageService.loadFileAsResource(fileName);
-
-    // Try to determine file's content type
-    String contentType = null;
-    try {
-      contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-    } catch (IOException ex) {
-      // logger.info("Could not determine file type.");
-    }
-
-    // Fallback to the default content type if type could not be determined
-    if(contentType == null) {
-      contentType = "application/octet-stream";
-    }
-
-    return ResponseEntity.ok()
-            .contentType(MediaType.parseMediaType(contentType))
-            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-            .body(resource);
-  }*/
- @PostMapping("/passwordoubli")
- public ResponseEntity<?> passwordoubli(@Valid @RequestBody PasswordoublierRequest loginRequest) throws Exception {
+  @PostMapping("/invite")
+  public ResponseEntity<?> InviteCollaborateur(@Valid @RequestBody InviteRequest inviteRequest) throws Exception {
+        return iAuthService.InviteCollaborateur(inviteRequest);
+  }
+  @PutMapping("/validate/{id}")
+  public ResponseEntity<?> ValidateUser(@PathVariable("id") long id) {
+    return iAuthService.ValidateUser(id);
+  }
+  @PostMapping("/passwordoubli")
+  public ResponseEntity<?> passwordoubli(@Valid @RequestBody PasswordoublierRequest loginRequest) throws Exception {
    return iAuthService.passwordoubli(loginRequest);
- }
+  }
 
   @PostMapping("/restpass")
   public ResponseEntity<?> restpass(@RequestBody RestRequest restRequest) throws Exception {
    return iAuthService.restpass(restRequest);
   }
-    @PostMapping("/uploadImage/{id}")
-    public String uploadImage(@PathVariable("id") long id, @RequestParam("file") MultipartFile file) {
+  @PostMapping("/uploadImage/{id}")
+  public String uploadImage(@PathVariable("id") long id, @RequestParam("file") MultipartFile file) {
      return iAuthService.uploadImage(id,file);
-    }
-    @GetMapping("/downloadFile/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+  }
+  @GetMapping("/downloadFile/{fileName:.+}")
+  public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
      return iAuthService.downloadFile(fileName,request);
+  }
+  @PostMapping("/decrypt-email/{encryptedEmail}")
+  public ResponseEntity<MessageResponse> decryptEmail(@PathVariable("encryptedEmail") String encryptedEmail) {
+    try {
+      return ResponseEntity.ok(new MessageResponse(EmailEncryptionUtil.decryptEmail(encryptedEmail)));
+    } catch (Exception e) {
+      return ResponseEntity
+              .badRequest()
+              .body(new MessageResponse("Error decrypting email"));
     }
+  }
 }
