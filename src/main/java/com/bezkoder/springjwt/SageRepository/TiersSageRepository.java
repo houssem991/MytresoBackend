@@ -15,4 +15,6 @@ import java.util.List;
 public interface TiersSageRepository extends JpaRepository<F_COMPTET, Integer> {
     @Query("SELECT t FROM F_COMPTET t WHERE t.type = '1'")
     List<F_COMPTET> findFournisseurs();
+    @Query("SELECT t FROM F_COMPTET t WHERE t.type = '0'")
+    List<F_COMPTET> findClients();
 }

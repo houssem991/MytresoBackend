@@ -5,7 +5,6 @@ import com.bezkoder.springjwt.models.*;
 import com.bezkoder.springjwt.payload.request.*;
 import com.bezkoder.springjwt.payload.response.JwtResponse;
 import com.bezkoder.springjwt.payload.response.MessageResponse;
-import com.bezkoder.springjwt.repository.AgentRepository;
 import com.bezkoder.springjwt.repository.EnterpriseRepository;
 import com.bezkoder.springjwt.repository.RoleRepository;
 import com.bezkoder.springjwt.repository.UserRepository;
@@ -238,6 +237,7 @@ if (user.getStatus().equals(EUser.NotVAlide)){
         user.setLastname(signUpRequest.getLastname());
         user.setFirstname(signUpRequest.getFirstname());
         user.setEmail(signUpRequest.getEmail());
+        user.setStatus(EUser.Valide);
         user.setPassword(encoder.encode(signUpRequest.getPassword()));
         Role role = roleRepository.findById(signUpRequest.getIdrole())
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -264,7 +264,7 @@ roles.add(role);
             // Save token to database
             String subject ="Invitation à Collaborer dans l'entreprise "+entreprise.getName();
             String imagePath = "classpath:static/uploads/digid.png";
-            String appUrl = request + entreprise.getId()+"/"+inviteRequest.getIdrole()+"/"+ EmailEncryptionUtil.encryptEmail(inviteRequest.getEmailCollabrator()).toString();
+            String appUrl = request + entreprise.getId()+"/"+inviteRequest.getIdrole()+"/"+ EmailEncryptionUtil.encryptEmail(inviteRequest.getEmailCollabrator());
             String body = " <html> <head> <meta charset='UTF-8'> <title>Invitation à Collaborer dans l'entreprise "+entreprise.getName()+"</title> <style>"
                     + """
               * {

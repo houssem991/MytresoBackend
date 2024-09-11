@@ -61,25 +61,15 @@ public class Facture {
     @Column(name = "DO_Etat")
     @Enumerated(EnumType.STRING)
     private EFacture etat;
-    @Column(name = "DL_LIGNE")
-    private Integer lineNumber;
 
-    @Column(name = "AR_REF")
-    private String productCode;
-
-    @Column(name = "DL_QTE")
-    private BigDecimal quantity;
-
-    @Column(name = "DL_PUTTC")
-    private BigDecimal unitPriceTTC;
-
-    @Column(name = "DL_MONTANTTTC")
-    private BigDecimal amountTTC;
     @ManyToOne()
     @JoinColumn(name = "fournisseur_num")
     @JsonIgnore
     private Fournisseur fournisseur;
-
+    @ManyToOne()
+    @JoinColumn(name = "client_num")
+    @JsonIgnore
+    private Client client;
     // Getters and Setters
 
 

@@ -14,8 +14,8 @@ public class AccessRoleResponse {
     Integer role_id;
     String nameaccess;
     Integer access_id;
-    boolean add;
-    boolean modifier;
-    boolean delete;
-    boolean consulter;
+    String add;
+    String modifier;
+    String delete;
+    String consulter;
 }

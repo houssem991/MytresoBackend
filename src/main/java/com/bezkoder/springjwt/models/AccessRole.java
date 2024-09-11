@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.util.Set;
 
 @Entity
-@Table(name = "Access_Role")
+@Table(name = "access_Role")
 @AssociationOverrides({
         @AssociationOverride(name = "id.role", joinColumns = @JoinColumn(name = "Role_Id")),
         @AssociationOverride(name = "id.access", joinColumns = @JoinColumn(name = "Access_Id"))

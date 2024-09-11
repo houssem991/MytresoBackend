@@ -17,23 +17,35 @@ import java.math.BigDecimal;
 public class F_DOCLIGNE {
 
     @Id
-    @Column(name = "DO_PIECE")
-    private String documentNumber;
+    @Column(name = "DL_No")
+    private String id;
+    @Column(name = "DO_Piece")
+    private String piece;
 
-    @Column(name = "DL_LIGNE")
+    @Column(name = "CT_Num")
+    private String clientCode;
+    @Column(name = "DO_Domaine")
+    private int Domaine;
+    @Column(name = "DL_Ligne")
     private Integer lineNumber;
 
-    @Column(name = "AR_REF")
-    private String productCode;
+    @Column(name = "AR_Ref")
+    private String reference;
 
-    @Column(name = "DL_QTE")
+    @Column(name = "DL_Qte")
     private BigDecimal quantity;
+    @Column(name = "DL_PrixUnitaire")
+    private BigDecimal unitpriceHT;
 
     @Column(name = "DL_PUTTC")
     private BigDecimal unitPriceTTC;
 
-    @Column(name = "DL_MONTANTTTC")
+    @Column(name = "DL_MontantHT")
+    private BigDecimal amountHT;
+    @Column(name = "DL_MontantTTC")
     private BigDecimal amountTTC;
+    @Column(name = "DL_Design")
+    private String designation;
 
 
 }

@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "Access")
+@Table(name = "access")
 @Getter
 @Setter
 public class Access {

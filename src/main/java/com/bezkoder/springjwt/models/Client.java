@@ -64,7 +64,10 @@ public class Client {
 
     @Column(name = "Identifiant")
     private String identifiant;
-
+    @ManyToOne()
+    @JoinColumn(name = "Owner_id")
+    @JsonIgnore
+    private User user;
 
     // Getters and Setters
 

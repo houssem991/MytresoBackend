@@ -23,26 +23,80 @@ public class DefaultUserConfig {
     public CommandLineRunner createDefaultUser(UserRepository userRepository, RoleRepository roleRepository, AccessRepository accessRepository, AccessRoleRepository accessRoleRepository, PasswordEncoder passwordEncoder) {
         return args -> {
 
-if (accessRepository.count() == 0) {
-    Access access = new Access();
-    access.setIcon("ft-home");
-    access.setPath("/dashboard/dashboard1");
-    access.setTitle("Dashboard");
-    access.setExternalLink(false);
-    Access access1 = new Access();
-    access1.setIcon("ft-lock");
-    access1.setPath("/pages/agents-role");
-    access1.setTitle("Gestion des roles");
-    access1.setExternalLink(false);
-    Access access2 = new Access();
-    access2.setIcon("ft-user");
-    access2.setPath("/pages/gestion-fournisseurs");
-    access2.setTitle("Gestion des Fournisseurs");
-    access2.setExternalLink(false);
-    accessRepository.save(access);
-    accessRepository.save(access1);
-    accessRepository.save(access2);
-}
+            if (accessRepository.count() == 0) {
+                Access access = new Access();
+                access.setIcon("ft-home");
+                access.setPath("/dashboard/dashboard1");
+                access.setTitle("Dashboard");
+                access.setExternalLink(false);
+                Access access1 = new Access();
+                access1.setIcon("ft-lock");
+                access1.setPath("/pages/agents-role");
+                access1.setTitle("Gestion des roles");
+                access1.setExternalLink(false);
+                Access access2 = new Access();
+                access2.setIcon("ft-user");
+                access2.setPath("/pages/gestion-fournisseurs");
+                access2.setTitle("Gestion des Fournisseurs");
+                access2.setExternalLink(false);
+                Access access3 = new Access();
+                access3.setIcon("ft-file-text");
+                access3.setPath("/pages/gestion-facture-fournissseurs");
+                access3.setTitle("Documents Fournisseurs");
+                access3.setExternalLink(false);
+                Access access4 = new Access();
+                access4.setIcon("ft-file-text");
+                access4.setPath("/pages/gestion-reglement-fournissseurs");
+                access4.setTitle("Reglements Fournisseurs");
+                access4.setExternalLink(false);
+                Access access5 = new Access();
+                access5.setIcon("ft-file-text");
+                access5.setPath("/pages/gestion-Impayes-fournissseurs");
+                access5.setTitle("Impayes Fournisseurs");
+                access5.setExternalLink(false);
+                Access access6 = new Access();
+                access6.setIcon("ft-user");
+                access6.setPath("/pages/gestion-clients");
+                access6.setTitle("Gestion des Clients");
+                access6.setExternalLink(false);
+                Access access7 = new Access();
+                access7.setIcon("ft-file-text");
+                access7.setPath("/pages/gestion-facture-Clients");
+                access7.setTitle("Documents Clients");
+                access7.setExternalLink(false);
+                Access access8 = new Access();
+                access8.setIcon("ft-file-text");
+                access8.setPath("/pages/gestion-reglements-Clients");
+                access8.setTitle("Reglements Clients");
+                access8.setExternalLink(false);
+                Access access9 = new Access();
+                access9.setIcon("ft-file-text");
+                access9.setPath("/pages/gestion-Imapyes-Clients");
+                access9.setTitle("Imapyes Clients");
+                access9.setExternalLink(false);
+                Access access10 = new Access();
+                access10.setIcon("fa fa-money");
+                access10.setPath("/pages/Caisse");
+                access10.setTitle("Caisse");
+                access10.setExternalLink(false);
+                Access access11 = new Access();
+                access11.setIcon("bi bi-bank");
+                access11.setPath("/pages/banque");
+                access11.setTitle("Banque");
+                access11.setExternalLink(false);
+                accessRepository.save(access);
+                accessRepository.save(access1);
+                accessRepository.save(access2);
+                accessRepository.save(access3);
+                accessRepository.save(access4);
+                accessRepository.save(access5);
+                accessRepository.save(access6);
+                accessRepository.save(access7);
+                accessRepository.save(access8);
+                accessRepository.save(access9);
+                accessRepository.save(access10);
+                accessRepository.save(access11);
+            }
             // Vérifier si la table des utilisateurs est vide
             if (userRepository.count() == 0) {
                 // Ajouter l'utilisateur par défaut

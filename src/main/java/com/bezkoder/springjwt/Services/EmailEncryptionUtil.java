@@ -31,13 +31,13 @@ public class EmailEncryptionUtil {
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
         byte[] encryptedBytes = cipher.doFinal(email.getBytes());
-        return Base64.getEncoder().encodeToString(encryptedBytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(encryptedBytes);
     }
 
     public static String decryptEmail(String encryptedEmail) throws Exception {
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, secretKey);
-        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedEmail));
+        byte[] decryptedBytes = cipher.doFinal(Base64.getUrlDecoder().decode(encryptedEmail));
         return new String(decryptedBytes);
     }
 }

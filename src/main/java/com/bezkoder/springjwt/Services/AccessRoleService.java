@@ -45,10 +45,18 @@ class AccessRoleService implements IAccessRoleService {
             acr.setName_role(val.getRole().getName());
             acr.setAccess_id(val.getAccess().getId());
             acr.setNameaccess(val.getAccess().getTitle());
-            acr.setAdd(val.isAjouter());
-            acr.setModifier(val.isModifier());
-            acr.setConsulter(val.isConsulter());
-            acr.setDelete(val.isSupprimer());
+            if(val.isAjouter()){
+                acr.setAdd("✔");
+            }else acr.setAdd("✘");
+            if(val.isConsulter()){
+                acr.setConsulter("✔");
+            }else acr.setConsulter("✘");
+            if(val.isModifier()){
+                acr.setModifier("✔");
+            }else acr.setModifier("✘");
+            if(val.isSupprimer()){
+                acr.setDelete("✔");
+            }else acr.setDelete("✘");
             arr.add(acr);
         });
         return arr;
@@ -64,10 +72,19 @@ class AccessRoleService implements IAccessRoleService {
             acr.setName_role(val.getRole().getName());
             acr.setAccess_id(val.getAccess().getId());
             acr.setNameaccess(val.getAccess().getTitle());
-            acr.setAdd(val.isAjouter());
-            acr.setModifier(val.isModifier());
-            acr.setConsulter(val.isConsulter());
-            acr.setDelete(val.isSupprimer());
+            if(val.isAjouter()){
+                acr.setAdd("✔");
+            }else acr.setAdd("✘");
+            if(val.isConsulter()){
+                acr.setConsulter("✔");
+            }else acr.setConsulter("✘");
+            if(val.isModifier()){
+                acr.setModifier("✔");
+            }else acr.setModifier("✘");
+            if(val.isSupprimer()){
+                acr.setDelete("✔");
+            }else acr.setDelete("✘");
+
             arr.add(acr);
         });
         return arr;
