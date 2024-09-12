@@ -33,9 +33,9 @@ public interface RegRepository extends JpaRepository<Reglement, Long> {
     boolean existsById(Long id);
     @Query("SELECT max(t.num) FROM Reglement t")
     Long getNumReglement();
-    @Query("SELECT  t FROM Reglement t WHERE t.DateEcheance = :date and t.N_Reglement = :num")
-    List<Reglement> findAllByDateEcheance(@Param("date") LocalDate date, @Param("num") long num);
-    @Query("SELECT SUM (t.solde) FROM Reglement t WHERE t.DateEcheance = :date and  t.N_Reglement = :num")
-    double SommeByDateEcheance(@Param("date") LocalDate date, @Param("num") long num);
+    @Query("SELECT  t FROM Reglement t WHERE t.fournisseur.user.id = :iduser and t.DateEcheance = :date and t.N_Reglement = :num")
+    List<Reglement> findAllByDateEcheance(@Param("iduser") long iduser,@Param("date") LocalDate date, @Param("num") long num);
+    @Query("SELECT COALESCE(SUM (t.solde),0) FROM Reglement t WHERE t.fournisseur.user.id = :iduser and t.DateEcheance = :date and  t.N_Reglement = :num ")
+    double SommeByDateEcheance(@Param("iduser") long iduser,@Param("date") LocalDate date, @Param("num") long num);
 }
 

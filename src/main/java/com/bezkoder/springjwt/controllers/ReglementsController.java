@@ -38,9 +38,9 @@ public class ReglementsController {
   public List<Reglement> alll(@PathVariable("iduser") Long iduser) {
     return iReglementService.findallReglementFournisseurs(iduser);
   }
-  @GetMapping("/date/test/{iduser}")
+  @GetMapping("/echeanceF/all/{iduser}")
   public List<EcheancierResponse> test(@PathVariable("iduser") Long iduser) {
-    return iReglementService.findAllDateEcheance(iduser);
+    return iReglementService.findAllDateEcheanceFournisseurs(iduser);
   }
   @GetMapping("/all/impaye/client/{iduser}")
   public List<Reglement> allImayeClient(@PathVariable("iduser") Long iduser) {

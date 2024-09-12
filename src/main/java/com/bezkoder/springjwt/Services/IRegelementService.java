@@ -39,7 +39,7 @@ public interface IRegelementService {
     ResponseEntity<?> AddReglementClient(RegRequest regRequest);
     ResponseEntity<?> AddReglementFournisseurs(RegRequest regRequest);
     List<Reglement> findAllByDateEcheance(LocalDate date);
-    List<EcheancierResponse> findAllDateEcheance(@Param("iduser") long iduser);
+    List<EcheancierResponse> findAllDateEcheanceFournisseurs(@Param("iduser") long iduser);
     List<F_REGLECH> findReglementCHFournisseurs();
     List<F_REGLECH> findReglementFournisseursByPiece(@Param("piece") String piece);
     List<F_REGLECH> findReglementClientByPiece(@Param("piece") String piece);

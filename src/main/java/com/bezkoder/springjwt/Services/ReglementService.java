@@ -500,15 +500,18 @@ class ReglementService implements IRegelementService {
     }
 
    @Override
-    public List<EcheancierResponse> findAllDateEcheance(long iduser) {
+    public List<EcheancierResponse> findAllDateEcheanceFournisseurs(long iduser) {
         P_REGLEMENT p = pReglementRepository.findByType("CHEQUE");
+        P_REGLEMENT p1 = pReglementRepository.findByType("TRAITE");
         List<LocalDate> dates = regRepository.findAllDateEcheance(iduser,p.getId());
         List<EcheancierResponse> ech = new ArrayList<>();
         dates.forEach(val-> {
             EcheancierResponse e = new EcheancierResponse();
-            List<Reglement> r = regRepository.findAllByDateEcheance(val , p.getId());
+            List<Reglement> r = regRepository.findAllByDateEcheance(iduser,val , p.getId());
+            List<Reglement> r1 = regRepository.findAllByDateEcheance(iduser,val , p1.getId());
+            r.addAll(r1);
             e.setDate(val);
-            e.setSomme(regRepository.SommeByDateEcheance(val, p.getId()));
+            e.setSomme(BigDecimal.valueOf(regRepository.SommeByDateEcheance(iduser,val, p.getId())).add(BigDecimal.valueOf(regRepository.SommeByDateEcheance(iduser,val, p1.getId()))).doubleValue());
             e.setReglements(r);
             ech.add(e);
         });
