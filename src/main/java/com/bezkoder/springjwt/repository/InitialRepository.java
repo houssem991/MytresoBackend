@@ -8,5 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface InitialRepository extends JpaRepository<Initilal, Long> {
 boolean existsById(Long id);
+boolean existsByElement(String element);
+Initilal findByElement(String element);
 }
 

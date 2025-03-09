@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface P_ReglementRepository extends JpaRepository<P_REGLEMENT, String> {
+public interface P_ReglementRepository extends JpaRepository<P_REGLEMENT, Integer> {
 P_REGLEMENT findByType(String type);
 }

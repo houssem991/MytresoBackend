@@ -39,8 +39,12 @@ public class ReglementsController {
     return iReglementService.findallReglementFournisseurs(iduser);
   }
   @GetMapping("/echeanceF/all/{iduser}")
-  public List<EcheancierResponse> test(@PathVariable("iduser") Long iduser) {
+  public List<EcheancierResponse> EchF(@PathVariable("iduser") Long iduser) {
     return iReglementService.findAllDateEcheanceFournisseurs(iduser);
+  }
+  @GetMapping("/echeanceC/all/{iduser}")
+  public List<EcheancierResponse> EchC(@PathVariable("iduser") Long iduser) {
+    return iReglementService.findAllDateEcheanceClients(iduser);
   }
   @GetMapping("/all/impaye/client/{iduser}")
   public List<Reglement> allImayeClient(@PathVariable("iduser") Long iduser) {
@@ -62,6 +66,10 @@ public class ReglementsController {
   public ResponseEntity<?> ImportFournisseur(@PathVariable("date1")LocalDate datedebut ,@PathVariable("date2") LocalDate datefin) {
     return iReglementService.ImportReglementFournisseurs(datedebut,datefin);
   }
+  @PostMapping("/regler/impayer/{id}")
+  public ResponseEntity<?> ReglerImpayer(@PathVariable("id")Long id ,@Valid @RequestBody RegRequest regRequest) {
+    return iReglementService.ReglerImpayer(id,regRequest);
+  }
   @PostMapping("/add/fournisseur")
   public ResponseEntity<?> AddBanquaireFournisseur(@Valid @RequestBody RegRequest regRequest) {
     return iReglementService.AddReglementFournisseurs(regRequest);
@@ -70,7 +78,7 @@ public class ReglementsController {
   public ResponseEntity<?>AddBanquaireClient(@Valid @RequestBody RegRequest regRequest) {
   return iReglementService.AddReglementClient(regRequest);
   }
-  @PutMapping ("/impaye/fournisseur/{iduser}/s{num}")
+  @PutMapping ("/impaye/fournisseur/{iduser}/{num}")
   public ResponseEntity<?> retourImpayeFournisseur(@PathVariable("iduser")Long iduser ,@PathVariable("num") Long num) {
     return iReglementService.retourImpayeFournisseurs(iduser,num);
   }

@@ -37,7 +37,11 @@ class InitialService implements IInitialService {
 
     @Override
     public ResponseEntity<?> AddInitial(InitialRequest initialRequest) {
-
+        if(initialRepository.existsByElement(initialRequest.getElement())){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Cet element est deja initialise!"));
+        }
         Initilal initilal = new Initilal();
         initilal.setElement(initialRequest.getElement());
         initilal.setInitial(initialRequest.getInitial());

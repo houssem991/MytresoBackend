@@ -1,6 +1,7 @@
 package com.bezkoder.springjwt.Services;
 
 import com.bezkoder.springjwt.models.Caisse;
+import com.bezkoder.springjwt.models.MouvementBanque;
 import com.bezkoder.springjwt.models.MouvementCaisse;
 import com.bezkoder.springjwt.payload.request.AlimentationRequest;
 import com.bezkoder.springjwt.payload.request.CaisseRequest;
@@ -13,4 +14,7 @@ public interface IMouvementService {
     List<MouvementCaisse> findAllByCaisse(long idCaisse);
 
     ResponseEntity<?> deleteCaisse(long id);
+    List<MouvementBanque> findAllByBanque(long idbaque);
+
+    ResponseEntity<?> deleteMouvementBanque(long id);
 }

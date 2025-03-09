@@ -27,15 +27,21 @@ public interface RegRepository extends JpaRepository<Reglement, Long> {
     List<Reglement> findAllImpayesClients(@Param("iduser") long iduser );
     @Query("SELECT t FROM Reglement t WHERE t.client.user.id = :iduser and t.num = :num")
     Reglement findReglementClients(@Param("iduser") long iduser, @Param("num") long num );
-    @Query("SELECT DISTINCT t.DateEcheance as DateEcheance  FROM Reglement t WHERE t.fournisseur.user.id = :iduser AND t.N_Reglement = :num AND t.DateEcheance >= CURRENT_DATE")
-    List<LocalDate> findAllDateEcheance(@Param("iduser") long iduser, @Param("num") long num);
-
+    @Query("SELECT DISTINCT t.DateEcheance as DateEcheance  FROM Reglement t WHERE t.fournisseur.user.id = :iduser AND t.N_Reglement = :num AND t.DateEcheance BETWEEN :startweek and :endweek")
+    List<LocalDate> findAllDateEcheance(@Param("iduser") long iduser, @Param("num") long num, @Param("startweek") LocalDate startweek, @Param("endweek") LocalDate endweek);
+    @Query("SELECT DISTINCT t.DateEcheance as DateEcheance  FROM Reglement t WHERE t.client.user.id = :iduser AND t.N_Reglement = :num AND t.DateEcheance BETWEEN :startweek and :endweek")
+    List<LocalDate> findAllDateEcheanceC(@Param("iduser") long iduser, @Param("num") long num, @Param("startweek") LocalDate startweek, @Param("endweek") LocalDate endweek);
     boolean existsById(Long id);
-    @Query("SELECT max(t.num) FROM Reglement t")
+    @Query("SELECT COALESCE(max(t.num),0) FROM Reglement t")
     Long getNumReglement();
     @Query("SELECT  t FROM Reglement t WHERE t.fournisseur.user.id = :iduser and t.DateEcheance = :date and t.N_Reglement = :num")
     List<Reglement> findAllByDateEcheance(@Param("iduser") long iduser,@Param("date") LocalDate date, @Param("num") long num);
+
     @Query("SELECT COALESCE(SUM (t.solde),0) FROM Reglement t WHERE t.fournisseur.user.id = :iduser and t.DateEcheance = :date and  t.N_Reglement = :num ")
     double SommeByDateEcheance(@Param("iduser") long iduser,@Param("date") LocalDate date, @Param("num") long num);
+    @Query("SELECT  t FROM Reglement t WHERE t.client.user.id = :iduser and t.DateEcheance = :date and t.N_Reglement = :num")
+    List<Reglement> findAllByDateEcheanceC(@Param("iduser") long iduser,@Param("date") LocalDate date, @Param("num") long num);
+    @Query("SELECT COALESCE(SUM (t.solde),0) FROM Reglement t WHERE t.client.user.id = :iduser and t.DateEcheance = :date and  t.N_Reglement = :num ")
+    double SommeByDateEcheanceC(@Param("iduser") long iduser,@Param("date") LocalDate date, @Param("num") long num);
 }
 

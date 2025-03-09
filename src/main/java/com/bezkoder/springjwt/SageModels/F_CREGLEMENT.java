@@ -56,6 +56,10 @@ public class F_CREGLEMENT {
     private int transfere;
     @Column(name = "RG_Cloture")
     private int cloture;
+    @Column(name = "N_Reglement")
+    private int N_Reglement;
+    @Column(name = "RG_DateEchCont")
+    private LocalDate DateEcheance;
 
 
 

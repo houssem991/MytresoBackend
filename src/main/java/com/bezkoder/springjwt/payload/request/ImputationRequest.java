@@ -13,8 +13,9 @@ public class ImputationRequest {
 
 	private double montant;
 	private long idcaisse;
+	private long idbanque;
 	private long idreglement;
-	private String piece;
+	private List<String> piece;
 
 
 

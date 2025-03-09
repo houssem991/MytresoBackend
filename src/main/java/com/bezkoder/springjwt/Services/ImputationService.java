@@ -35,9 +35,13 @@ class ImputationService implements IImputaionService {
     @Autowired
     CaisseRepository caisseRepository;
     @Autowired
+    BanqueRepository banqueRepository;
+    @Autowired
     RegRepository regRepository;
     @Autowired
     MouvementRepository mouvementRepository;
+    @Autowired
+    MouvementBanqueRepository mouvementBanqueRepository;
     @Override
     public List<ImputationResponse> findall(long id) {
         Reglement reglement = reglementRepository.findById(id).get();
@@ -46,9 +50,9 @@ class ImputationService implements IImputaionService {
 
         Imputation.forEach(val->{
             ImputationResponse imputationResponse = new ImputationResponse();
-            imputationResponse.setDR_No(val.getDR_No());
+            imputationResponse.setEtat(val.getFacture().getEtat());
             imputationResponse.setMontant(val.getMontant());
-            imputationResponse.setNum(val.getReglement().getNum());
+            imputationResponse.setCode(val.getReglement().getCode());
             imputationResponse.setPiece(val.getFacture().getId());
             imputationResponses.add(imputationResponse);
         });
@@ -65,18 +69,79 @@ class ImputationService implements IImputaionService {
     @Override
     public ResponseEntity<?> Imputation(ImputationRequest imputationRequest) {
         Reglement r =reglementRepository.findById(imputationRequest.getIdreglement()).get();
-        Facture  f = factureRepository.findById(imputationRequest.getPiece()).get();
+        BigDecimal solde = BigDecimal.valueOf(r.getSoldeRestant());
+        MouvementCaisse m = new MouvementCaisse();
+        MouvementBanque m1 = new MouvementBanque();
+        for (String val : imputationRequest.getPiece()) {
+            ImputationReglement imputation = new ImputationReglement();
+            if(imputationRequest.getIdbanque()!=0){
+                if (m.getPiece()==null){
+                    m.setPiece(val);
+                } else {
+                    m1.setPiece(m.getPiece() + val + ",");
+                }
+            }
+            if (imputationRequest.getIdcaisse()!=0){
+                if (m.getPiece()==null){
+                    m.setPiece(val);
+                }else {
+                    m.setPiece(m.getPiece() + val + ",");
+                }
+            }
 
-        if(imputationRequest.getMontant()> f.getResteAPayer()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Le montant saisie depasse le reste à payer de la facture!"));
-        }
 
-        if(imputationRequest.getMontant()> r.getSoldeRestant()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Solde Reglement insuffisant!"));
+            if (r.getType() == 1) {
+                Facture f = factureRepository.findFactureFournisseur(val);
+                if(solde.doubleValue() >= f.getResteAPayer()) {
+                    solde = solde.subtract(BigDecimal.valueOf(f.getResteAPayer()));
+                    imputation.setMontant(f.getResteAPayer());
+                    f.setResteAPayer(0);
+                    f.setEtat(EFacture.TotRegle);
+                    f.setMontantRegle(f.getNetAPayer());
+
+
+                } else {
+                    imputation.setMontant(solde.doubleValue());
+                    f.setResteAPayer(BigDecimal.valueOf(f.getResteAPayer()).subtract(solde).doubleValue());
+                    f.setMontantRegle(BigDecimal.valueOf(f.getMontantRegle()).add(solde).doubleValue());
+                    f.setEtat(EFacture.PartRegle);
+                    solde = BigDecimal.valueOf(0);
+                }
+                imputation.setDomaine(f.getDomaine());
+                imputation.setType(f.getType());
+                imputation.setDR_No(r.getNum());
+                imputation.setFacture(f);
+                imputation.setReglement(r);
+                imputationRepository.save(imputation);
+                factureRepository.save(f);
+            } else {
+                Facture f = factureRepository.findFactureClient(val);
+                if(solde.doubleValue() >= f.getResteAPayer()) {
+                    solde = solde.subtract(BigDecimal.valueOf(f.getResteAPayer()));
+                    imputation.setMontant(f.getResteAPayer());
+                    f.setResteAPayer(0);
+                    f.setEtat(EFacture.TotRegle);
+                    f.setMontantRegle(f.getNetAPayer());
+
+
+                } else {
+                    imputation.setMontant(solde.doubleValue());
+                    f.setResteAPayer(BigDecimal.valueOf(f.getResteAPayer()).subtract(solde).doubleValue());
+                    f.setMontantRegle(BigDecimal.valueOf(f.getMontantRegle()).add(solde).doubleValue());
+                    f.setEtat(EFacture.PartRegle);
+                    solde = BigDecimal.valueOf(0);
+                }
+
+                imputation.setDomaine(f.getDomaine());
+                imputation.setType(f.getType());
+
+                imputation.setDR_No(r.getNum());
+                imputation.setFacture(f);
+                imputation.setReglement(r);
+                imputationRepository.save(imputation);
+                factureRepository.save(f);
+            }
+
         }
         if(imputationRequest.getIdcaisse()!=0){
             Caisse c = caisseRepository.findById(imputationRequest.getIdcaisse()).get();
@@ -87,45 +152,59 @@ class ImputationService implements IImputaionService {
                             .badRequest()
                             .body(new MessageResponse("Error: Solde Caisse insuffisant!"));
                 }
-                MouvementCaisse m = new MouvementCaisse();
+
                 m.setCaisse(c);
                 m.setMouvement("-"+imputationRequest.getMontant()+" DT");
-                m.setPiece(f.getId());
+
                 m.setLibelle(r.getLibelle());
                 m.setDate(LocalDate.now());
-                mouvementRepository.save(m);
                 c.setSolde(BigDecimal.valueOf(c.getSolde()).subtract(BigDecimal.valueOf(imputationRequest.getMontant())).doubleValue());
             }else  {
                 c.setSolde(BigDecimal.valueOf(c.getSolde()).add(BigDecimal.valueOf(imputationRequest.getMontant())).doubleValue());
-                MouvementCaisse m = new MouvementCaisse();
                 m.setCaisse(c);
                 m.setMouvement("+"+imputationRequest.getMontant()+" DT");
-                m.setPiece(f.getId());
                 m.setLibelle(r.getLibelle());
                 m.setDate(LocalDate.now());
-                mouvementRepository.save(m);
             }
-caisseRepository.save(c);
+            mouvementRepository.save(m);
+            caisseRepository.save(c);
         }
-            ImputationReglement imputation = new ImputationReglement();
-            imputation.setDomaine(f.getDomaine());
-            imputation.setType(f.getType());
-            imputation.setMontant(imputationRequest.getMontant());
-            imputation.setDR_No(r.getNum());
-            imputation.setFacture(f);
-            imputation.setReglement(r);
-            if (f.getResteAPayer()- imputationRequest.getMontant()==0){
-                f.setEtat(EFacture.TotRegle);
-            }else f.setEtat(EFacture.PartRegle);
-            if(r.getSoldeRestant()-imputationRequest.getMontant()==0){
-                r.setEtat(EReglement.TotAffecter);
+        if(imputationRequest.getIdbanque()!=0){
+            Banque b = banqueRepository.findById(imputationRequest.getIdbanque()).get();
+
+            if(r.getType()==1){
+                if(imputationRequest.getMontant()> b.getSolde()) {
+                    return ResponseEntity
+                            .badRequest()
+                            .body(new MessageResponse("Error: Solde Banque insuffisant!"));
+                }
+
+                m1.setBanque(b);
+                m1.setMouvement("-"+imputationRequest.getMontant()+" DT");
+
+                m1.setLibelle(r.getLibelle());
+                m1.setDate(LocalDate.now());
+                b.setSolde(BigDecimal.valueOf(b.getSolde()).subtract(BigDecimal.valueOf(imputationRequest.getMontant())).doubleValue());
+            }else  {
+                b.setSolde(BigDecimal.valueOf(b.getSolde()).add(BigDecimal.valueOf(imputationRequest.getMontant())).doubleValue());
+                m1.setBanque(b);
+                m1.setMouvement("+"+imputationRequest.getMontant()+" DT");
+                m1.setLibelle(r.getLibelle());
+                m1.setDate(LocalDate.now());
             }
-            else r.setEtat(EReglement.PartAffecter);
-        f.setResteAPayer(BigDecimal.valueOf(f.getResteAPayer()).add(BigDecimal.valueOf(imputationRequest.getMontant())).doubleValue());
-        f.setMontantRegle(BigDecimal.valueOf(f.getMontantRegle()).add(BigDecimal.valueOf(imputationRequest.getMontant())).doubleValue() );
-        r.setSoldeRestant(BigDecimal.valueOf(r.getSoldeRestant()).subtract(BigDecimal.valueOf(imputationRequest.getMontant())).doubleValue() );
-            imputationRepository.save(imputation);
-            factureRepository.save(f);
+            mouvementBanqueRepository.save(m1);
+            banqueRepository.save(b);
+        }
+
+
+
+
+        r.setSoldeRestant(solde.doubleValue());
+        if (solde.doubleValue()==0) {
+            r.setEtat(EReglement.TotAffecter);
+        } else {
+            r.setEtat(EReglement.PartAffecter);
+        }
             reglementRepository.save(r);
         return ResponseEntity.ok(new MessageResponse("Imputation ajouté avec succés"));
     }
@@ -161,7 +240,7 @@ caisseRepository.save(c);
 
 
         Reglement r = reglementRepository.findById(imputationRequest.getIdreglement()).get();
-        Facture f = factureRepository.findById(imputationRequest.getPiece()).get();
+       /* Facture f = factureRepository.findById(imputationRequest.getPiece()).get();
         ImputationReglement imputation = imputationRepository.findById(id).get();
         double solde = BigDecimal.valueOf(imputationRequest.getMontant()).subtract(BigDecimal.valueOf(imputation.getMontant())).doubleValue() ;
 
@@ -226,7 +305,7 @@ caisseRepository.save(c);
         r.setSoldeRestant(BigDecimal.valueOf(r.getSoldeRestant()).subtract(BigDecimal.valueOf(solde)).doubleValue() );
         imputationRepository.save(imputation);
         factureRepository.save(f);
-        reglementRepository.save(r);
+        reglementRepository.save(r);*/
 
     return ResponseEntity.ok(new MessageResponse("Imputation modifié avec succés"));
     }

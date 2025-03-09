@@ -44,11 +44,15 @@ class FactureService implements IFactureService {
     @Autowired
     BanqueRepository banqueRepository;
     @Autowired
+    InitialRepository initialRepository;
+    @Autowired
     ImputationRepository imputationRepository;
     @Autowired
     P_ReglementRepository pReglementRepository;
     @Autowired
     MouvementRepository mouvementRepository;
+    @Autowired
+    MouvementBanqueRepository mouvementBanqueRepository;
     @Autowired
     LigneFactureRepository ligneFactureRepository;
 
@@ -187,7 +191,15 @@ class FactureService implements IFactureService {
                 if(regRequest.getType().equals("VIREMENT")){
                     r.setLibelle("REG TRT N°"+regRequest.getNumpiece()+" Banque "+regRequest.getBanque());
                 }
+
                 r.setDateEcheance(regRequest.getDateEcheance());
+                MouvementBanque m = new MouvementBanque();
+                m.setBanque(b);
+                m.setMouvement("-" + regRequest.getSolde() + " DT");
+                m.setPiece(f.getId());
+                m.setLibelle(r.getLibelle());
+                m.setDate(LocalDate.now());
+                mouvementBanqueRepository.save(m);
                 banqueRepository.save(b);
 
             } else return ResponseEntity
@@ -201,6 +213,12 @@ class FactureService implements IFactureService {
         } else {
             r.setNum(regRepository.getNumReglement() + 1);
         }
+        r.setCode("0"+r.getNum());
+        while (r.getCode().length()<10){
+            r.setCode("0"+r.getCode());
+        }
+        Initilal in = initialRepository.findByElement("Reglement Fournisseur");
+        r.setCode(in.getInitial()+r.getCode());
         r.setImpaye(false);
         r.setTypereglement(0);
         r.setSoldeRestant(0);
@@ -248,6 +266,12 @@ class FactureService implements IFactureService {
             } else  {
                 rs.setNum(regRepository.getNumReglement()+1);
             }
+            rs.setCode("0"+rs.getNum());
+            while (rs.getCode().length()<10){
+                rs.setCode("0"+rs.getCode());
+            }
+            Initilal i1 = initialRepository.findByElement("Retenu à la source");
+            rs.setCode(i1.getInitial()+rs.getCode());
             rs.setImpaye(false);
             rs.setTypereglement(0);
             rs.setSoldeRestant(0);
@@ -336,6 +360,13 @@ class FactureService implements IFactureService {
                     r.setLibelle("REG TRT N°"+regRequest.getNumpiece()+" Banque "+regRequest.getBanque());
                 }
                 r.setDateEcheance(regRequest.getDateEcheance());
+            MouvementBanque m = new MouvementBanque();
+            m.setBanque(b);
+            m.setMouvement("+" + regRequest.getSolde() + " DT");
+            m.setPiece(f.getId());
+            m.setLibelle(r.getLibelle());
+            m.setDate(LocalDate.now());
+            mouvementBanqueRepository.save(m);
                 banqueRepository.save(b);
 
             }
@@ -347,6 +378,13 @@ class FactureService implements IFactureService {
         } else {
             r.setNum(regRepository.getNumReglement() + 1);
         }
+        r.setCode("0"+r.getNum());
+        while (r.getCode().length()<10){
+            r.setCode("0"+r.getCode());
+        }
+        Initilal in = initialRepository.findByElement("Reglement Client");
+        r.setCode(in.getInitial()+r.getCode());
+
         r.setImpaye(false);
         r.setTypereglement(0);
         r.setSoldeRestant(0);
@@ -394,6 +432,12 @@ class FactureService implements IFactureService {
             } else  {
                 rs.setNum(regRepository.getNumReglement()+1);
             }
+            rs.setCode("0"+rs.getNum());
+            while (rs.getCode().length()<10){
+                rs.setCode("0"+rs.getCode());
+            }
+            Initilal i1 = initialRepository.findByElement("Retenu à la source");
+            rs.setCode(i1.getInitial()+rs.getCode());
             rs.setImpaye(false);
             rs.setTypereglement(0);
             rs.setSoldeRestant(0);

@@ -1,6 +1,7 @@
 package com.bezkoder.springjwt.payload.response;
 
 
+import com.bezkoder.springjwt.models.EFacture;
 import com.bezkoder.springjwt.models.Facture;
 import com.bezkoder.springjwt.models.Reglement;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,9 +23,9 @@ import java.math.BigDecimal;
 public class ImputationResponse {
 
 
-	private Long DR_No;
 	private double montant;
-	private long num;
+	private String code;
 	private String piece;
+	private EFacture etat;
 
 }

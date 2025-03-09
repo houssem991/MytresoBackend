@@ -3,6 +3,7 @@ package com.bezkoder.springjwt.controllers;
 import com.bezkoder.springjwt.Services.ICaisseService;
 import com.bezkoder.springjwt.Services.IMouvementService;
 import com.bezkoder.springjwt.models.Caisse;
+import com.bezkoder.springjwt.models.MouvementBanque;
 import com.bezkoder.springjwt.models.MouvementCaisse;
 import com.bezkoder.springjwt.payload.request.AlimentationRequest;
 import com.bezkoder.springjwt.payload.request.CaisseRequest;
@@ -28,6 +29,16 @@ public class MouvementController {
   @DeleteMapping("/delete/{id}")
   public ResponseEntity<?> delete( @PathVariable("id") Long id ) {
     return iMouvementService.deleteCaisse(id);
+  }
+  @GetMapping("/all/banque/{id}")
+  public List<MouvementBanque> allB(@PathVariable("id") Long id) {
+    return iMouvementService.findAllByBanque(id);
+  }
+
+
+  @DeleteMapping("/delete/banque/{id}")
+  public ResponseEntity<?> deleteBanque( @PathVariable("id") Long id ) {
+    return iMouvementService.deleteMouvementBanque(id);
   }
 
 

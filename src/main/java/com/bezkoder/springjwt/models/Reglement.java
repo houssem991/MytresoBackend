@@ -10,6 +10,8 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "reglement")
@@ -22,7 +24,8 @@ public class Reglement {
     @Id
     @Column(name = "RG_No")
     private Long num;
-
+    @Column(name = "code")
+    private String code;
     @Column(name = "CT_NumPayeur")
     private String Tiers;
 
@@ -78,7 +81,9 @@ public class Reglement {
     @JsonIgnore
     private Client client;
     // Getters and Setters
-
+    @OneToMany(mappedBy = "reglement",fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<ImputationReglement> imputationReglementList ;
 
 }
 

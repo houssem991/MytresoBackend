@@ -38,8 +38,10 @@ public interface IRegelementService {
     ResponseEntity<?> ImportReglementClient(LocalDate datedebut , LocalDate datefin);
     ResponseEntity<?> AddReglementClient(RegRequest regRequest);
     ResponseEntity<?> AddReglementFournisseurs(RegRequest regRequest);
+    ResponseEntity<?> ReglerImpayer(long id , RegRequest regRequest);
     List<Reglement> findAllByDateEcheance(LocalDate date);
     List<EcheancierResponse> findAllDateEcheanceFournisseurs(@Param("iduser") long iduser);
+    List<EcheancierResponse> findAllDateEcheanceClients(@Param("iduser") long iduser);
     List<F_REGLECH> findReglementCHFournisseurs();
     List<F_REGLECH> findReglementFournisseursByPiece(@Param("piece") String piece);
     List<F_REGLECH> findReglementClientByPiece(@Param("piece") String piece);
